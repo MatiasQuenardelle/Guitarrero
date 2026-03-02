@@ -57,7 +57,7 @@ export default function SectionCard({
           )}
         </div>
       )}
-      <div className="space-y-0 max-h-[600px] overflow-y-auto">
+      <div className="space-y-0">
         {section.lines.map((line, i) => {
           const lineEl = (() => {
             switch (line.type) {
