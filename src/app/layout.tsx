@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Guitarrero — Guitar Tabs Side by Side",
+  title: "Guitarrero — Learn Classical Guitar",
   description:
-    "Paste guitar tabs and view sections side-by-side in a clean, horizontal layout. No ads, no clutter.",
+    "A Duolingo-style path for learning classical guitar: fundamentals, technique, and a graded repertoire from Aguado to Tárrega — plus a clean tab viewer.",
 };
 
 export default function RootLayout({

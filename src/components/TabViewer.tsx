@@ -12,8 +12,8 @@ import ViewerToolbar from "./ViewerToolbar";
 interface TabViewerProps {
   song: ParsedSong;
   rawText: string;
-  onNewTab: () => void;
-  onOpenLibrary: () => void;
+  onNewTab?: () => void;
+  onOpenLibrary?: () => void;
 }
 
 export default function TabViewer({ song, rawText, onNewTab, onOpenLibrary }: TabViewerProps) {
@@ -69,25 +69,31 @@ export default function TabViewer({ song, rawText, onNewTab, onOpenLibrary }: Ta
 
   return (
     <div className="w-full">
-      <div className="no-print flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-zinc-100">
-          Guitar<span className="text-amber-400">rero</span>
-        </h2>
-        <div className="flex gap-2">
-          <button
-            onClick={onOpenLibrary}
-            className="px-4 py-2 border border-zinc-600 text-zinc-300 rounded-lg hover:border-amber-500 hover:text-amber-400 transition-colors text-sm"
-          >
-            My Tabs
-          </button>
-          <button
-            onClick={onNewTab}
-            className="px-4 py-2 border border-zinc-600 text-zinc-300 rounded-lg hover:border-amber-500 hover:text-amber-400 transition-colors text-sm"
-          >
-            New Tab
-          </button>
+      {(onNewTab || onOpenLibrary) && (
+        <div className="no-print flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-zinc-100">
+            Guitar<span className="text-amber-400">rero</span>
+          </h2>
+          <div className="flex gap-2">
+            {onOpenLibrary && (
+              <button
+                onClick={onOpenLibrary}
+                className="px-4 py-2 border border-zinc-600 text-zinc-300 rounded-lg hover:border-amber-500 hover:text-amber-400 transition-colors text-sm"
+              >
+                My Tabs
+              </button>
+            )}
+            {onNewTab && (
+              <button
+                onClick={onNewTab}
+                className="px-4 py-2 border border-zinc-600 text-zinc-300 rounded-lg hover:border-amber-500 hover:text-amber-400 transition-colors text-sm"
+              >
+                New Tab
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <SongHeader
         title={song.title}
