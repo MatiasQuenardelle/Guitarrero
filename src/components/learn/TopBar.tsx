@@ -20,7 +20,7 @@ export default function TopBar() {
   return (
     <header className="sticky top-0 z-20 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-lg font-bold tracking-tight text-zinc-100">
+        <Link href="/learn" className="text-lg font-bold tracking-tight text-zinc-100">
           Guitar<span className="text-amber-400">rero</span>
         </Link>
         <div className="flex items-center gap-3">
@@ -42,7 +42,7 @@ export default function TopBar() {
             {progress.xp} XP
           </span>
           <Link
-            href="/tools"
+            href="/"
             className="rounded-md border border-zinc-700 px-2.5 py-1 text-xs font-medium text-zinc-300 transition-colors hover:border-amber-500 hover:text-amber-400"
           >
             Tab Tools

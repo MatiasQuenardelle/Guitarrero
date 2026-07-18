@@ -42,13 +42,13 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
   const handleComplete = () => {
     completeLesson(lesson.id);
     setJustCompleted(true);
-    setTimeout(() => router.push("/"), 1200);
+    setTimeout(() => router.push("/learn"), 1200);
   };
 
   return (
     <main className="mx-auto max-w-3xl px-4 pb-32 pt-6">
       <Link
-        href="/"
+        href="/learn"
         className="text-sm text-zinc-400 transition-colors hover:text-amber-400"
       >
         &larr; Back to path
