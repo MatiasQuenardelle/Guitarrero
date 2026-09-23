@@ -42,12 +42,20 @@ export default function GuitareroApp() {
 
   return (
     <main className="min-h-screen bg-zinc-950 px-4 py-8 sm:px-6 lg:px-8">
-      <Link
-        href="/learn"
-        className="no-print fixed right-4 top-4 z-20 rounded-md border border-zinc-700 bg-zinc-950/80 px-2.5 py-1 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-colors hover:border-amber-500 hover:text-amber-400"
-      >
-        Aprender
-      </Link>
+      <div className="no-print fixed right-4 top-4 z-20 flex gap-2">
+        <Link
+          href="/studio"
+          className="rounded-md border border-zinc-700 bg-zinc-950/80 px-2.5 py-1 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-colors hover:border-amber-500 hover:text-amber-400"
+        >
+          Studio
+        </Link>
+        <Link
+          href="/learn"
+          className="rounded-md border border-zinc-700 bg-zinc-950/80 px-2.5 py-1 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-colors hover:border-amber-500 hover:text-amber-400"
+        >
+          Aprender
+        </Link>
+      </div>
       {view === "viewer" && song ? (
         <TabViewer
           song={song}

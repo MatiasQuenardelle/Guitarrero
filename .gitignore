@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# studio data (videos, frames, transcriptions)
+/.data/
+
+# alphaTab runtime copied by postinstall
+/public/alphatab/
+
+# python bytecode from the pipeline scripts
+__pycache__/
