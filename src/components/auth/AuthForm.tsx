@@ -22,6 +22,12 @@ function GoogleMark() {
   );
 }
 
+/**
+ * Off until Neon Auth has our own Google OAuth client: its shared one answers
+ * redirect_uri_mismatch for the sa-east-1 region.
+ */
+const GOOGLE_SIGN_IN = false;
+
 const inputClass =
   "h-12 w-full rounded-xl border border-walnut-600 bg-walnut-950/70 px-4 text-[15px] text-cream-50 placeholder:text-sand-600 outline-none transition-colors focus:border-brass-400/70 focus:bg-walnut-950";
 
@@ -93,23 +99,27 @@ export default function AuthForm({ mode, enabled }: { mode: Mode; enabled: boole
         </p>
       ) : (
         <>
-          <button
-            type="button"
-            onClick={google}
-            disabled={pending !== null}
-            className={buttonClass("secondary", "lg", "mt-8 w-full")}
-          >
-            <GoogleMark />
-            {t.auth.google}
-          </button>
+          {GOOGLE_SIGN_IN && (
+            <>
+              <button
+                type="button"
+                onClick={google}
+                disabled={pending !== null}
+                className={buttonClass("secondary", "lg", "mt-8 w-full")}
+              >
+                <GoogleMark />
+                {t.auth.google}
+              </button>
 
-          <div className="my-6 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-sand-500">
-            <span className="h-px flex-1 bg-walnut-600" />
-            {t.auth.or}
-            <span className="h-px flex-1 bg-walnut-600" />
-          </div>
+              <div className="my-6 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-sand-500">
+                <span className="h-px flex-1 bg-walnut-600" />
+                {t.auth.or}
+                <span className="h-px flex-1 bg-walnut-600" />
+              </div>
+            </>
+          )}
 
-          <form onSubmit={submit} className="flex flex-col gap-4">
+          <form onSubmit={submit} className={`flex flex-col gap-4 ${GOOGLE_SIGN_IN ? "" : "mt-8"}`}>
             {isSignUp && (
               <label className="flex flex-col gap-1.5 text-sm text-sand-300">
                 {t.auth.name}
