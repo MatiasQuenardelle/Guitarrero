@@ -1,23 +1,153 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/*
+ * "Madera": walnut and rosewood surfaces, spruce-cream type, brass accents, and the score
+ * on warm paper. Every colour in the app comes from these tokens.
+ */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --color-night: #110b08;
+  --color-walnut-950: #150e0a;
+  --color-walnut-900: #1b130e;
+  --color-walnut-850: #211710;
+  --color-walnut-800: #2a1d15;
+  --color-walnut-700: #37271c;
+  --color-walnut-600: #4a3425;
+  --color-walnut-500: #654834;
+
+  --color-cedar-400: #a9774f;
+  --color-cedar-300: #c49670;
+
+  --color-brass-200: #efdcb4;
+  --color-brass-300: #e3c58c;
+  --color-brass-400: #d3aa63;
+  --color-brass-500: #bb8f45;
+  --color-brass-600: #976f31;
+
+  --color-cream-50: #fbf7ef;
+  --color-cream-100: #f3eadb;
+  --color-cream-200: #e6d8c0;
+
+  --color-sand-300: #cbb79a;
+  --color-sand-400: #a8937a;
+  --color-sand-500: #857260;
+  --color-sand-600: #65554a;
+
+  --color-paper: #f8f1e3;
+  --color-paper-edge: #eadcc3;
+  --color-ink: #2b1e15;
+
+  --color-rosewood-400: #c2715c;
+  --color-rosewood-500: #9b4b3a;
+  --color-rosewood-900: #3a1a14;
+
+  --color-sage-400: #9fb28a;
+}
+
+html {
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: #09090b;
-  color: #e4e4e7;
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background-color: var(--color-night);
+  color: var(--color-cream-100);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+}
+
+::selection {
+  background: rgba(211, 170, 99, 0.35);
+  color: var(--color-cream-50);
+}
+
+/* Walnut: a long, soft grain from SVG noise stretched along one axis. Tiled and static,
+   so it costs one raster, never a per-frame filter. */
+.wood {
+  background-color: var(--color-walnut-900);
+  background-image:
+    linear-gradient(180deg, rgba(17, 11, 8, 0) 0%, rgba(17, 11, 8, 0.55) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.11' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.78 0 0 0 0 0.56 0 0 0 0 0.36 0.42 0 0 0 -0.14'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 900px 300px;
+}
+
+/* A quieter grain for large page backgrounds. */
+.wood-quiet {
+  background-color: var(--color-night);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(169, 119, 79, 0.16), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.11' numOctaves='4' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.78 0 0 0 0 0.56 0 0 0 0 0.36 0.2 0 0 0 -0.075'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 900px 300px;
+}
+
+/* Panels: a lacquered surface with a thin brass-tinted edge. */
+.panel {
+  background: linear-gradient(180deg, rgba(55, 39, 28, 0.72), rgba(33, 23, 16, 0.86));
+  border: 1px solid rgba(211, 170, 99, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(239, 220, 180, 0.05),
+    0 18px 40px -24px rgba(0, 0, 0, 0.8);
+}
+
+/* Purfling: the inlaid strip around a guitar's top, used as a section divider. */
+.purfling {
+  height: 7px;
+  background:
+    linear-gradient(90deg, transparent, rgba(211, 170, 99, 0.55) 12%, rgba(211, 170, 99, 0.55) 88%, transparent) top / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, rgba(169, 119, 79, 0.55) 0 4px, rgba(21, 14, 10, 0.9) 4px 6px, rgba(239, 220, 180, 0.35) 6px 8px, rgba(21, 14, 10, 0.9) 8px 10px) center / 100% 3px no-repeat,
+    linear-gradient(90deg, transparent, rgba(211, 170, 99, 0.55) 12%, rgba(211, 170, 99, 0.55) 88%, transparent) bottom / 100% 1px no-repeat;
+  opacity: 0.8;
+}
+
+/* The score's paper. */
+.paper {
+  background-color: var(--color-paper);
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.6), transparent 60%);
+  color: var(--color-ink);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
 }
 
 @keyframes node-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.45);
+    box-shadow: 0 0 0 0 rgba(211, 170, 99, 0.45);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+    box-shadow: 0 0 0 8px rgba(211, 170, 99, 0);
   }
 }
 

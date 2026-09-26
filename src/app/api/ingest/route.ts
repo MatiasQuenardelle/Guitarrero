@@ -1,8 +1,12 @@
+import { adminOnly } from "@/lib/admin";
 import { NextResponse } from "next/server";
 import { youtubeId } from "@/lib/studio/paths";
 import { startIngest } from "@/lib/studio/server";
 
 export async function POST(request: Request) {
+  const denied = adminOnly();
+  if (denied) return denied;
+
   const body = (await request.json()) as { url?: string; from?: string };
   const url = body.url?.trim() ?? "";
   const id = youtubeId(url);

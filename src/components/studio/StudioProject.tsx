@@ -6,7 +6,9 @@ import LiteYouTube from "@/components/learn/LiteYouTube";
 import { findBarIssues } from "@/lib/studio/lint";
 import type { ProjectSummary } from "@/lib/studio/server";
 import type { ProjectPayload } from "@/lib/studio/types";
+import type { Piece } from "@/lib/catalog/types";
 import FrameStrip from "./FrameStrip";
+import PublishPanel from "./PublishPanel";
 import ScorePlayer from "./ScorePlayer";
 import TabSwitcher from "./TabSwitcher";
 import TexEditor from "./TexEditor";
@@ -24,15 +26,15 @@ function Progress({ project }: { project: ProjectPayload }) {
   const activeIndex = STAGES.findIndex((s) => s.key === stage);
 
   return (
-    <section className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-6">
-      <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+    <section className="rounded-xl border border-walnut-700 bg-walnut-950/60 p-6">
+      <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-walnut-700">
         <div
-          className="h-full rounded-full bg-amber-500 transition-all"
+          className="h-full rounded-full bg-brass-400 transition-all"
           style={{ width: `${Math.round(progress * 100)}%` }}
         />
       </div>
 
-      <p className="mb-4 text-sm text-zinc-300">{message}</p>
+      <p className="mb-4 text-sm text-sand-300">{message}</p>
 
       <ol className="flex flex-col gap-1 text-sm">
         {STAGES.map((item, index) => {
@@ -41,7 +43,7 @@ function Progress({ project }: { project: ProjectPayload }) {
           return (
             <li
               key={item.key}
-              className={done ? "text-zinc-500" : active ? "text-amber-400" : "text-zinc-600"}
+              className={done ? "text-sand-500" : active ? "text-brass-400" : "text-sand-600"}
             >
               {done ? "✓" : active ? "▸" : "·"} {item.label}
             </li>
@@ -63,15 +65,15 @@ function RunningBanner({ project }: { project: ProjectPayload }) {
   const { message, progress } = project.status;
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-amber-900/50 bg-amber-950/20 px-4 py-3">
-      <span className="h-1.5 w-32 shrink-0 overflow-hidden rounded-full bg-zinc-800">
+    <div className="flex items-center gap-4 rounded-xl border border-brass-600/50 bg-walnut-800/20 px-4 py-3">
+      <span className="h-1.5 w-32 shrink-0 overflow-hidden rounded-full bg-walnut-700">
         <span
-          className="block h-full rounded-full bg-amber-500 transition-all"
+          className="block h-full rounded-full bg-brass-400 transition-all"
           style={{ width: `${Math.round(progress * 100)}%` }}
         />
       </span>
-      <span className="text-sm text-amber-200/90">{message}</span>
-      <span className="text-xs text-zinc-500">
+      <span className="text-sm text-brass-200/90">{message}</span>
+      <span className="text-xs text-sand-500">
         Showing the previous version until it finishes.
       </span>
     </div>
@@ -81,9 +83,12 @@ function RunningBanner({ project }: { project: ProjectPayload }) {
 export default function StudioProject({
   initial,
   projects,
+  published,
 }: {
   initial: ProjectPayload;
   projects: ProjectSummary[];
+  /** The library piece this project was published as, if any. */
+  published: Piece | null;
 }) {
   const [project, setProject] = useState(initial);
   const [tex, setTex] = useState(initial.alphaTex ?? "");
@@ -136,7 +141,8 @@ export default function StudioProject({
   }, [project.meta.id, project.meta.url]);
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-8">
+    <main>
+      <div className="mx-auto w-full max-w-6xl px-4 py-8">
       <header className="mb-6 flex items-start justify-between gap-4">
         <div className="min-w-0">
           {projects.length > 1 ? (
@@ -146,15 +152,15 @@ export default function StudioProject({
               projects={recentFirst}
             />
           ) : (
-            <h1 className="truncate text-xl font-semibold text-zinc-100">{project.meta.title}</h1>
+            <h1 className="truncate text-xl font-semibold text-cream-50">{project.meta.title}</h1>
           )}
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-sand-500">
             {project.meta.video.uploader} · {project.meta.frames.length} screenshots
             {project.score ? ` · ${project.score.bars.length} bars` : ""}
           </p>
         </div>
-        <Link href="/studio" className="shrink-0 text-sm text-amber-400 hover:text-amber-300">
-          ← Studio
+        <Link href="/studio" className="shrink-0 text-sm text-brass-400 hover:text-brass-300">
+          ← Taller
         </Link>
       </header>
 
@@ -163,10 +169,10 @@ export default function StudioProject({
       ) : (
         <div className="flex flex-col gap-5">
           {running && <RunningBanner project={project} />}
-          <ScorePlayer projectId={project.meta.id} tex={tex} />
+          <ScorePlayer id={project.meta.id} tex={tex} />
 
           {issues.length > 0 && (
-            <p className="rounded-xl border border-amber-900/50 bg-amber-950/20 px-4 py-3 text-sm text-amber-200/90">
+            <p className="rounded-xl border border-brass-600/50 bg-walnut-800/20 px-4 py-3 text-sm text-brass-200/90">
               {issues.length === 1 ? "Bar" : "Bars"}{" "}
               {issues.map((issue) => issue.bar).join(", ")}{" "}
               {issues.length === 1 ? "doesn't" : "don't"} add up to the time signature — the
@@ -175,6 +181,12 @@ export default function StudioProject({
               screenshots below and fix the durations in the tab source.
             </p>
           )}
+
+          <PublishPanel
+            projectId={project.meta.id}
+            suggestedTitle={project.meta.header?.title ?? project.meta.title}
+            published={published}
+          />
 
           <TexEditor projectId={project.meta.id} tex={tex} onChange={setTex} />
 
@@ -186,9 +198,9 @@ export default function StudioProject({
 
           <section className="grid gap-4 md:grid-cols-[2fr_1fr]">
             <LiteYouTube youtubeId={project.meta.id} title={project.meta.title} />
-            <div className="flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-              <h2 className="text-sm text-zinc-300">Source video</h2>
-              <p className="text-xs text-zinc-500">
+            <div className="flex flex-col gap-3 rounded-xl border border-walnut-700 bg-walnut-950/60 p-4">
+              <h2 className="text-sm text-sand-300">Source video</h2>
+              <p className="text-xs text-sand-500">
                 Playback above comes from the transcription, not the video — the two are not
                 synced yet.
               </p>
@@ -196,11 +208,11 @@ export default function StudioProject({
                 type="button"
                 onClick={rerun}
                 disabled={rerunning}
-                className="h-9 rounded-lg border border-zinc-700 bg-zinc-900 text-sm text-zinc-300 hover:border-zinc-600 disabled:opacity-40"
+                className="h-9 rounded-lg border border-walnut-600 bg-walnut-900 text-sm text-sand-300 hover:border-walnut-500 disabled:opacity-40"
               >
                 {rerunning ? "Re-reading…" : "Read the tab again"}
               </button>
-              <p className="text-xs text-zinc-600">
+              <p className="text-xs text-sand-600">
                 Re-runs the transcription on the existing screenshots. Your edits to the tab
                 source will be overwritten.
               </p>
@@ -208,6 +220,7 @@ export default function StudioProject({
           </section>
         </div>
       )}
+      </div>
     </main>
   );
 }

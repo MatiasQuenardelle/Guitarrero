@@ -1,0 +1,23 @@
+{
+  "slug": "nocturno-op-9-1",
+  "title": {
+    "es": "Nocturno Op. 9 N.º 1",
+    "en": "Nocturne Op. 9 No. 1"
+  },
+  "composer": "Frédéric Chopin",
+  "composerDates": "1810 – 1849",
+  "difficulty": 3,
+  "about": {
+    "es": "Nocturno en Si bemol menor: melodía larga, grupos irregulares y rubato.",
+    "en": "Nocturne in B-flat minor: long melodic lines, irregular groupings and rubato."
+  },
+  "bars": 116,
+  "tempo": 90,
+  "timeSignature": [
+    6,
+    4
+  ],
+  "youtubeId": "RrwT4NkEJsg",
+  "sourceProject": "RrwT4NkEJsg",
+  "publishedAt": "2026-09-23"
+}

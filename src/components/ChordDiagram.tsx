@@ -36,7 +36,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
           y1={fretY(0)}
           x2={stringX(5)}
           y2={fretY(0)}
-          stroke="#a1a1aa"
+          stroke="#cbb79a"
           strokeWidth={3}
         />
       ) : (
@@ -46,7 +46,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
             y1={fretY(0)}
             x2={stringX(5)}
             y2={fretY(0)}
-            stroke="#52525b"
+            stroke="#65554a"
             strokeWidth={1}
           />
           <text
@@ -54,7 +54,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
             y={fretY(0.5)}
             textAnchor="middle"
             fontSize={10}
-            fill="#a1a1aa"
+            fill="#cbb79a"
             dominantBaseline="middle"
           >
             {baseFret}
@@ -70,7 +70,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
           y1={fretY(i + 1)}
           x2={stringX(5)}
           y2={fretY(i + 1)}
-          stroke="#52525b"
+          stroke="#65554a"
           strokeWidth={1}
         />
       ))}
@@ -83,7 +83,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
           y1={fretY(0)}
           x2={stringX(i)}
           y2={fretY(numFrets)}
-          stroke="#52525b"
+          stroke="#65554a"
           strokeWidth={1}
         />
       ))}
@@ -106,7 +106,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
             width={stringX(last) - stringX(first) + 6}
             height={8}
             rx={4}
-            fill="#f59e0b"
+            fill="#d3aa63"
             opacity={0.8}
           />
         );
@@ -123,7 +123,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
             cx={stringX(i)}
             cy={fretY(fretPos) - fretSpacing / 2}
             r={5}
-            fill="#f59e0b"
+            fill="#d3aa63"
           />
         );
       })}
@@ -138,7 +138,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
               cy={fretY(0) - 8}
               r={4}
               fill="none"
-              stroke="#a1a1aa"
+              stroke="#cbb79a"
               strokeWidth={1.5}
             />
           );
@@ -151,7 +151,7 @@ export default function ChordDiagram({ data }: ChordDiagramProps) {
               y={fretY(0) - 5}
               textAnchor="middle"
               fontSize={10}
-              fill="#a1a1aa"
+              fill="#cbb79a"
               dominantBaseline="middle"
             >
               ×

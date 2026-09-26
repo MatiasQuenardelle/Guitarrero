@@ -1,3 +1,40 @@
+# Rediseño "Madera" + landing + login + catálogo curado (2026-09-23)
+
+Decisiones: UI bilingüe ES/EN · Neon Auth + Postgres · "Aprender" oculto · los usuarios NO
+generan tabs · (cambio de Matías a mitad de camino) **la app se usa sin cuenta**; la cuenta es
+opcional y solo sincroniza favoritas/tempos.
+
+- [x] Catálogo versionado `content/pieces/<slug>/` + `npm run publish` + panel "Publish" en el studio
+- [x] 8 obras publicadas (Lágrima, La Paloma, Adelita, Claro de Luna, Vals venezolano 2,
+      Clair de Lune, Nocturno op. 9/1, Marcha turca). Versión elegida: la que abriste por
+      última vez, si no la `-checked` (Vals: eAzHv0QHDb4-checked, no la de 6/8)
+- [x] Studio + APIs de ingesta solo admin (dev server o `GUITARRERO_ADMIN=1`), 404 en prod
+- [x] `/learn` oculto (`src/app/learn/layout.tsx`)
+- [x] Sistema visual Madera: tokens, veta SVG estática (sin blur), purfling, papel crema,
+      Cormorant + Inter + JetBrains Mono, tinta cálida en alphaTab
+- [x] Landing, login/signup, shell con sidebar/tab bar, biblioteca (búsqueda, dificultad,
+      favoritas, seguir estudiando), pieza (transporte nuevo, loop popover, info + video),
+      lector (rediseñado + modo escenario a pantalla completa por páginas)
+- [x] i18n ES/EN con cookie + Accept-Language
+- [x] Neon: proyecto `guitarrero` (dry-grass-10344846, sa-east-1), Auth habilitado,
+      tabla `piece_progress`; `.env.local` escrito
+- [x] Verificado: tsc, eslint, `npm run build`, registro real con Playwright, progreso en
+      DB, favoritas sin cuenta, capturas desktop + iPhone 13
+- [x] Navegación (feedback de Matías): "Estudio" (biblioteca + reproductor) es la sección
+      principal; Lector bajo "Herramientas"; el studio de admin se llama "Taller", vive dentro
+      del mismo shell y marca los proyectos ya publicados
+- [ ] Deploy: soundfonts a un host estático (`NEXT_PUBLIC_SOUNDS_ORIGIN`), Google OAuth
+      propio + dominio en trusted domains de Neon Auth, env vars en Vercel
+
+## Review
+- El dev server de :3001 sirve un `globals.css` viejo (la lección del 19/09 otra vez). Para las
+  capturas le inyecté el CSS del build de producción. Reiniciá el dev server para ver la veta
+  sin costura.
+- Cuenta de prueba creada: prueba.pw@guitarrero.dev (borrala de Neon Auth cuando quieras).
+
+---
+
+
 # Guitarrero Studio — YouTube → tab → Guitar Pro-style player
 
 Plan: `~/.claude/plans/foamy-popping-owl.md`

@@ -1,0 +1,23 @@
+{
+  "slug": "la-paloma",
+  "title": {
+    "es": "La Paloma",
+    "en": "La Paloma"
+  },
+  "composer": "Sebastián Iradier",
+  "composerDates": "1809 – 1865",
+  "difficulty": 1,
+  "about": {
+    "es": "Habanera lenta: ritmo punteado, arpegios en el bajo y una melodía que canta.",
+    "en": "A slow habanera: dotted rhythm, arpeggiated bass and a singing melody."
+  },
+  "bars": 57,
+  "tempo": 40,
+  "timeSignature": [
+    2,
+    4
+  ],
+  "youtubeId": "lQ80kxTnKnI",
+  "sourceProject": "lQ80kxTnKnI-checked",
+  "publishedAt": "2026-09-23"
+}

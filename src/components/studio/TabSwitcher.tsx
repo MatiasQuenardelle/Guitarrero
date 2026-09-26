@@ -77,9 +77,9 @@ export default function TabSwitcher({
         onClick={toggle}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="group -mx-2 flex max-w-full items-center gap-2 rounded-lg px-2 py-1 text-left transition-colors hover:bg-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-500"
+        className="group -mx-2 flex max-w-full items-center gap-2 rounded-lg px-2 py-1 text-left transition-colors hover:bg-walnut-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brass-400"
       >
-        <h1 className="truncate text-xl font-semibold text-zinc-100">{title}</h1>
+        <h1 className="truncate text-xl font-semibold text-cream-50">{title}</h1>
         <svg
           viewBox="0 0 20 20"
           fill="none"
@@ -88,14 +88,14 @@ export default function TabSwitcher({
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden
-          className={`h-4 w-4 shrink-0 text-zinc-500 transition-transform group-hover:text-amber-400 ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 shrink-0 text-sand-500 transition-transform group-hover:text-brass-400 ${open ? "rotate-180" : ""}`}
         >
           <path d="m5 8 5 5 5-5" />
         </svg>
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-30 mt-2 w-[min(30rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 shadow-2xl shadow-black/60">
+        <div className="absolute left-0 top-full z-30 mt-2 w-[min(30rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-walnut-700 bg-walnut-950 shadow-2xl shadow-black/60">
           {projects.length >= FILTER_THRESHOLD && (
             <input
               autoFocus
@@ -105,7 +105,7 @@ export default function TabSwitcher({
                 setActive(0);
               }}
               placeholder="Find a piece…"
-              className="w-full border-b border-zinc-800 bg-transparent px-4 py-3 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
+              className="w-full border-b border-walnut-700 bg-transparent px-4 py-3 text-sm text-cream-100 placeholder:text-sand-600 focus:outline-none"
             />
           )}
 
@@ -119,28 +119,28 @@ export default function TabSwitcher({
                   aria-selected={current}
                   onClick={() => select(project)}
                   onPointerMove={() => setActive(index)}
-                  className={`flex cursor-pointer items-center gap-3 rounded-lg p-2 ${index === active ? "bg-zinc-900" : ""}`}
+                  className={`flex cursor-pointer items-center gap-3 rounded-lg p-2 ${index === active ? "bg-walnut-900" : ""}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`https://i.ytimg.com/vi/${project.id}/default.jpg`}
                     alt=""
-                    className={`h-10 w-16 shrink-0 rounded object-cover ${current ? "ring-2 ring-amber-500" : ""}`}
+                    className={`h-10 w-16 shrink-0 rounded object-cover ${current ? "ring-2 ring-brass-400" : ""}`}
                   />
                   <span className="min-w-0 flex-1">
                     <span
-                      className={`block truncate text-sm ${current ? "text-amber-400" : "text-zinc-200"}`}
+                      className={`block truncate text-sm ${current ? "text-brass-400" : "text-cream-100"}`}
                     >
                       {project.title}
                     </span>
                     <StatusPill project={project} />
                   </span>
-                  {current && <span className="shrink-0 pr-1 text-xs text-amber-400">✓</span>}
+                  {current && <span className="shrink-0 pr-1 text-xs text-brass-400">✓</span>}
                 </li>
               );
             })}
             {matches.length === 0 && (
-              <li className="px-3 py-6 text-center text-sm text-zinc-600">No piece matches.</li>
+              <li className="px-3 py-6 text-center text-sm text-sand-600">No piece matches.</li>
             )}
           </ul>
         </div>

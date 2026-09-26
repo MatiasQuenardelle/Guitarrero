@@ -1,0 +1,23 @@
+{
+  "slug": "lagrima",
+  "title": {
+    "es": "Lágrima",
+    "en": "Lágrima"
+  },
+  "composer": "Francisco Tárrega",
+  "composerDates": "1852 – 1909",
+  "difficulty": 1,
+  "about": {
+    "es": "Preludio breve en Mi mayor y Mi menor: legato, cambios de posición y un canto sobre el bajo.",
+    "en": "A short prelude in E major and E minor: legato, position shifts and a melody over the bass."
+  },
+  "bars": 24,
+  "tempo": 90,
+  "timeSignature": [
+    3,
+    4
+  ],
+  "youtubeId": "tDSoQuqWuqQ",
+  "sourceProject": "tDSoQuqWuqQ",
+  "publishedAt": "2026-09-23"
+}

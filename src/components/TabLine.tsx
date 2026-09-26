@@ -7,7 +7,7 @@ interface TabLineProps {
 export default function TabLine({ content }: TabLineProps) {
   return (
     <pre
-      className="font-mono text-zinc-500 leading-tight whitespace-pre"
+      className="font-mono text-sand-400 leading-tight whitespace-pre"
       style={{ fontSize: "var(--tab-font-size, 14px)" }}
     >
       {content}

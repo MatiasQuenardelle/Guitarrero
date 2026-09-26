@@ -48,3 +48,9 @@ next-env.d.ts
 
 # python bytecode from the pipeline scripts
 __pycache__/
+
+# soundfonts downloaded for `npm run soundfont` (too big for git; served from public/ locally)
+/*.sf2
+
+# local UI screenshots
+/screenshots/

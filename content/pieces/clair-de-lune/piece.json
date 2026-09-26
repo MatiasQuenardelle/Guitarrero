@@ -1,0 +1,24 @@
+{
+  "slug": "clair-de-lune",
+  "title": {
+    "es": "Clair de Lune",
+    "en": "Clair de Lune"
+  },
+  "composer": "Claude Debussy",
+  "composerDates": "1862 – 1918",
+  "difficulty": 3,
+  "about": {
+    "es": "Arreglo en Re: acordes arpegiados, rubato y un sonido muy cuidado.",
+    "en": "Arrangement in D: rolled chords, rubato and a carefully shaped tone."
+  },
+  "bars": 72,
+  "tempo": 42,
+  "timeSignature": [
+    9,
+    8
+  ],
+  "tuning": "Drop D",
+  "youtubeId": "bHSj9yxKl5k",
+  "sourceProject": "bHSj9yxKl5k",
+  "publishedAt": "2026-09-23"
+}

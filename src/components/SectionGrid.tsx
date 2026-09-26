@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Section } from "@/lib/types";
 import SectionCard from "./SectionCard";
 
@@ -17,14 +17,16 @@ export default function SectionGrid({
   transposeAmount = 0,
   onSplitSection,
 }: SectionGridProps) {
-  const [sectionOrder, setSectionOrder] = useState<number[]>([]);
+  const [sectionOrder, setSectionOrder] = useState<number[]>(() => sections.map((_, i) => i));
+  const [orderedFor, setOrderedFor] = useState(sections);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
-  // Reset order when sections change
-  useEffect(() => {
+  // A split changes the sections: start again from their natural order.
+  if (orderedFor !== sections) {
+    setOrderedFor(sections);
     setSectionOrder(sections.map((_, i) => i));
-  }, [sections]);
+  }
 
   const handleDragStart = (orderIdx: number) => (e: React.DragEvent) => {
     setDraggedIndex(orderIdx);

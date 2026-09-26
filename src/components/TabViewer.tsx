@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { ParsedSong, Section } from "@/lib/types";
-import { saveTab } from "@/lib/storage";
-import { useAutoScroll } from "@/hooks/useAutoScroll";
+import { useCallback, useEffect, useState } from "react";
+import { buttonClass } from "@/components/ui/button";
 import { ChordHighlightProvider } from "@/contexts/ChordHighlightContext";
-import SongHeader from "./SongHeader";
+import { useAutoScroll } from "@/hooks/useAutoScroll";
+import { useI18n } from "@/i18n/I18nProvider";
+import { saveTab } from "@/lib/storage";
+import { ParsedSong, Section } from "@/lib/types";
 import SectionGrid from "./SectionGrid";
+import SongHeader from "./SongHeader";
+import StageView from "./StageView";
 import ViewerToolbar from "./ViewerToolbar";
 
 interface TabViewerProps {
@@ -17,20 +20,18 @@ interface TabViewerProps {
 }
 
 export default function TabViewer({ song, rawText, onNewTab, onOpenLibrary }: TabViewerProps) {
+  const { t } = useI18n();
   const [fontSize, setFontSize] = useState(14);
   const [transposeAmount, setTransposeAmount] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollSpeed, setScrollSpeed] = useState(1.5);
   const [sections, setSections] = useState<Section[]>(song.sections);
+  const [saved, setSaved] = useState(false);
+  const [stage, setStage] = useState(false);
 
   const handleScrollStop = useCallback(() => setIsScrolling(false), []);
 
-  useAutoScroll({ speed: scrollSpeed, isScrolling, onStop: handleScrollStop });
-
-  // Reset sections when song changes
-  useEffect(() => {
-    setSections(song.sections);
-  }, [song]);
+  useAutoScroll({ speed: scrollSpeed, isScrolling: isScrolling && !stage, onStop: handleScrollStop });
 
   const handleSplitSection = useCallback((sectionIndex: number, lineIndex: number) => {
     setSections((prev) => {
@@ -49,6 +50,7 @@ export default function TabViewer({ song, rawText, onNewTab, onOpenLibrary }: Ta
 
   // Space bar toggles scroll when no input focused
   useEffect(() => {
+    if (stage) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === "Space" && !["INPUT", "TEXTAREA", "SELECT"].includes((e.target as HTMLElement).tagName)) {
         e.preventDefault();
@@ -57,41 +59,30 @@ export default function TabViewer({ song, rawText, onNewTab, onOpenLibrary }: Ta
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [stage]);
 
   const handleSave = () => {
+    if (saved) return;
     saveTab({ title: song.title, artist: song.artist, rawText });
+    setSaved(true);
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
+  const closeStage = useCallback(() => setStage(false), []);
 
   return (
     <div className="w-full">
       {(onNewTab || onOpenLibrary) && (
-        <div className="no-print flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-zinc-100">
-            Guitar<span className="text-amber-400">rero</span>
-          </h2>
-          <div className="flex gap-2">
-            {onOpenLibrary && (
-              <button
-                onClick={onOpenLibrary}
-                className="px-4 py-2 border border-zinc-600 text-zinc-300 rounded-lg hover:border-amber-500 hover:text-amber-400 transition-colors text-sm"
-              >
-                My Tabs
-              </button>
-            )}
-            {onNewTab && (
-              <button
-                onClick={onNewTab}
-                className="px-4 py-2 border border-zinc-600 text-zinc-300 rounded-lg hover:border-amber-500 hover:text-amber-400 transition-colors text-sm"
-              >
-                New Tab
-              </button>
-            )}
-          </div>
+        <div className="no-print mb-6 flex items-center justify-end gap-2">
+          {onOpenLibrary && (
+            <button onClick={onOpenLibrary} className={buttonClass("ghost", "sm")}>
+              {t.reader.saved}
+            </button>
+          )}
+          {onNewTab && (
+            <button onClick={onNewTab} className={buttonClass("secondary", "sm")}>
+              {t.reader.newTab}
+            </button>
+          )}
         </div>
       )}
 
@@ -112,8 +103,13 @@ export default function TabViewer({ song, rawText, onNewTab, onOpenLibrary }: Ta
         scrollSpeed={scrollSpeed}
         onScrollToggle={() => setIsScrolling((prev) => !prev)}
         onSpeedChange={setScrollSpeed}
-        onPrint={handlePrint}
+        onPrint={() => window.print()}
         onSave={handleSave}
+        saved={saved}
+        onStage={() => {
+          setIsScrolling(false);
+          setStage(true);
+        }}
       />
 
       <ChordHighlightProvider>
@@ -124,6 +120,16 @@ export default function TabViewer({ song, rawText, onNewTab, onOpenLibrary }: Ta
           onSplitSection={handleSplitSection}
         />
       </ChordHighlightProvider>
+
+      {stage && (
+        <StageView
+          title={song.title || t.reader.untitled}
+          sections={sections}
+          transposeAmount={transposeAmount}
+          initialFontSize={fontSize}
+          onClose={closeStage}
+        />
+      )}
     </div>
   );
 }

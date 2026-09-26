@@ -1,5 +1,6 @@
 "use client";
 
+import { useI18n } from "@/i18n/I18nProvider";
 import { transposeNote } from "@/lib/chords";
 
 interface SongHeaderProps {
@@ -10,42 +11,30 @@ interface SongHeaderProps {
   transposeAmount?: number;
 }
 
-export default function SongHeader({
-  title,
-  artist,
-  capo,
-  songKey,
-  transposeAmount = 0,
-}: SongHeaderProps) {
-  const hasMetadata = title || artist || capo || songKey;
+export default function SongHeader({ title, artist, capo, songKey, transposeAmount = 0 }: SongHeaderProps) {
+  const { t } = useI18n();
+  if (!(title || artist || capo || songKey)) return null;
 
-  if (!hasMetadata) return null;
-
-  const displayKey =
-    songKey && transposeAmount !== 0
-      ? transposeNote(songKey, transposeAmount)
-      : songKey;
+  const displayKey = songKey && transposeAmount !== 0 ? transposeNote(songKey, transposeAmount) : songKey;
 
   return (
     <div className="mb-6">
-      {title && (
-        <h1 className="text-2xl font-bold text-zinc-100">{title}</h1>
-      )}
-      {artist && (
-        <p className="text-lg text-zinc-400 mt-1">{artist}</p>
-      )}
-      <div className="flex gap-4 mt-2">
+      {title && <h1 className="font-display text-5xl font-medium leading-tight text-cream-50">{title}</h1>}
+      {artist && <p className="mt-1 text-lg text-sand-400">{artist}</p>}
+      <div className="mt-3 flex gap-5 text-sm text-sand-500">
         {songKey && (
-          <span className="text-sm text-zinc-500">
-            Key: <span className="text-amber-400">{displayKey}</span>
+          <span>
+            {t.reader.key}: <span className="font-mono text-brass-300">{displayKey}</span>
             {transposeAmount !== 0 && (
-              <span className="text-zinc-600 ml-1">(orig: {songKey})</span>
+              <span className="ml-1 text-sand-600">
+                ({t.reader.original} {songKey})
+              </span>
             )}
           </span>
         )}
         {capo && (
-          <span className="text-sm text-zinc-500">
-            Capo: <span className="text-amber-400">{capo}</span>
+          <span>
+            {t.reader.capo}: <span className="font-mono text-brass-300">{capo}</span>
           </span>
         )}
       </div>

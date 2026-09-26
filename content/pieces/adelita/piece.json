@@ -1,0 +1,23 @@
+{
+  "slug": "adelita",
+  "title": {
+    "es": "Adelita",
+    "en": "Adelita"
+  },
+  "composer": "Francisco Tárrega",
+  "composerDates": "1852 – 1909",
+  "difficulty": 2,
+  "about": {
+    "es": "Mazurca en Mi menor: melodía en la primera cuerda, ligados y un glissando expresivo.",
+    "en": "Mazurka in E minor: melody on the first string, slurs and an expressive glissando."
+  },
+  "bars": 16,
+  "tempo": 90,
+  "timeSignature": [
+    3,
+    4
+  ],
+  "youtubeId": "UDZ3RBtM7p0",
+  "sourceProject": "UDZ3RBtM7p0",
+  "publishedAt": "2026-09-23"
+}

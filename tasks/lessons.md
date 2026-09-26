@@ -518,3 +518,9 @@ the file with `new alphaTab.synth.AlphaSynth(fakeOutput)`, `synthesizer.loadPres
 `channelNoteOn`, `synthesize`, and look for NaN/peak. Fix (in `npm run soundfont`): rewrite
 each shdr's sampleType to mono and sampleLink to 0 — the zones already pan each half.
 **Rule:** render a note offline before offering a new soundfont; "it loads" proves nothing.
+
+## Don't stop after the plan on big tasks (2026-09-23)
+Asked for a full redesign + landing + login, I wrote the plan, asked three questions and
+stopped. Matías wanted to leave it running all night. **Rule:** on a large task, write the
+plan and keep going in the same turn. Decide open questions with sensible defaults and
+record them in `tasks/todo.md`. Only stop for destructive, paid or public actions.

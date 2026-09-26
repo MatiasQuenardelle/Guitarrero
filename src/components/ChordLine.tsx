@@ -25,7 +25,7 @@ export default function ChordLine({ content, transposeAmount = 0 }: ChordLinePro
   return (
     <>
       <pre
-        className="font-mono text-amber-400 leading-tight whitespace-pre chord-line-print"
+        className="font-mono font-semibold text-brass-300 leading-tight whitespace-pre chord-line-print"
         style={{ fontSize: "var(--tab-font-size, 14px)" }}
       >
         {tokens.map((token, i) => {
@@ -39,8 +39,8 @@ export default function ChordLine({ content, transposeAmount = 0 }: ChordLinePro
           return (
             <span
               key={i}
-              className={`cursor-pointer hover:text-amber-300 transition-colors ${
-                isHighlighted ? "bg-amber-400/20 rounded px-0.5" : ""
+              className={`cursor-pointer hover:text-brass-200 transition-colors ${
+                isHighlighted ? "bg-brass-400/20 rounded px-0.5" : ""
               }`}
               onMouseEnter={() => setHighlightedChord(token.raw)}
               onMouseLeave={() => setHighlightedChord(null)}

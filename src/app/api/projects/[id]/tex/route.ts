@@ -1,3 +1,4 @@
+import { adminOnly } from "@/lib/admin";
 import { NextResponse } from "next/server";
 import { getProject, saveAlphaTex } from "@/lib/studio/server";
 
@@ -5,6 +6,9 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const denied = adminOnly();
+  if (denied) return denied;
+
   const { id } = await params;
   if (!getProject(id)) return NextResponse.json({ error: "Not found" }, { status: 404 });
 

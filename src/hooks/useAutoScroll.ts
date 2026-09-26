@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface UseAutoScrollOptions {
   speed: number; // px per frame tick (0.5 - 5)
@@ -12,15 +12,18 @@ export function useAutoScroll({ speed, isScrolling, onStop }: UseAutoScrollOptio
   const rafRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
 
-  const scroll = useCallback(
-    (timestamp: number) => {
+  // The frame loop lives inside the effect, so it always sees the current speed and stop.
+  useEffect(() => {
+    if (!isScrolling) return;
+    lastTimeRef.current = 0;
+
+    const step = (timestamp: number) => {
       if (!lastTimeRef.current) lastTimeRef.current = timestamp;
       const delta = timestamp - lastTimeRef.current;
       lastTimeRef.current = timestamp;
 
       // ~60fps: 16.67ms per frame
-      const px = speed * (delta / 16.67);
-      window.scrollBy(0, px);
+      window.scrollBy(0, speed * (delta / 16.67));
 
       // Stop at bottom
       const atBottom =
@@ -29,28 +32,15 @@ export function useAutoScroll({ speed, isScrolling, onStop }: UseAutoScrollOptio
         onStop();
         return;
       }
-
-      rafRef.current = requestAnimationFrame(scroll);
-    },
-    [speed, onStop]
-  );
-
-  useEffect(() => {
-    if (isScrolling) {
-      lastTimeRef.current = 0;
-      rafRef.current = requestAnimationFrame(scroll);
-    } else if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
-
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
+      rafRef.current = requestAnimationFrame(step);
     };
-  }, [isScrolling, scroll]);
+
+    rafRef.current = requestAnimationFrame(step);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    };
+  }, [isScrolling, speed, onStop]);
 
   // Pause on manual scroll
   useEffect(() => {

@@ -1,0 +1,23 @@
+{
+  "slug": "nocturno-op-9-1-facil",
+  "title": {
+    "es": "Nocturno Op. 9 N.º 1 (versión fácil)",
+    "en": "Nocturne Op. 9 No. 1 (easy version)"
+  },
+  "composer": "Frédéric Chopin",
+  "composerDates": "1810 – 1849",
+  "difficulty": 2,
+  "about": {
+    "es": "El nocturno sin los adornos: melodía y bajo intactos, acompañamiento en negras y los pasajes rápidos en corcheas.",
+    "en": "The nocturne without the ornaments: melody and bass intact, accompaniment on the beat and the fast runs in straight eighths."
+  },
+  "bars": 116,
+  "tempo": 80,
+  "timeSignature": [
+    6,
+    4
+  ],
+  "youtubeId": "RrwT4NkEJsg",
+  "sourceProject": "",
+  "publishedAt": "2026-09-23"
+}

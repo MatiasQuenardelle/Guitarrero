@@ -1,5 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import StudioProject from "@/components/studio/StudioProject";
+import { requireAdmin } from "@/lib/admin";
+import { listPieces } from "@/lib/catalog/server";
 import { getProject, listProjects, projectSlugs, resolveProjectId } from "@/lib/studio/server";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +11,7 @@ export default async function StudioProjectPage({
 }: {
   params: Promise<{ projectId: string }>;
 }) {
+  requireAdmin();
   const { projectId } = await params;
   const id = resolveProjectId(projectId);
   if (!id) notFound();
@@ -20,5 +23,6 @@ export default async function StudioProjectPage({
   if (!project) notFound();
 
   // Keyed so switching tabs remounts with the new piece's state.
-  return <StudioProject key={id} initial={project} projects={listProjects()} />;
+  const published = listPieces().find((piece) => piece.sourceProject === id) ?? null;
+  return <StudioProject key={id} initial={project} projects={listProjects()} published={published} />;
 }

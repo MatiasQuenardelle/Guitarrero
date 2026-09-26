@@ -1,0 +1,23 @@
+{
+  "slug": "marcha-turca",
+  "title": {
+    "es": "Marcha turca",
+    "en": "Turkish March"
+  },
+  "composer": "Wolfgang Amadeus Mozart",
+  "composerDates": "1756 – 1791",
+  "difficulty": 3,
+  "about": {
+    "es": "Rondó alla turca: velocidad, digitación limpia y ornamentos rápidos.",
+    "en": "Rondo alla turca: speed, clean fingering and quick ornaments."
+  },
+  "bars": 120,
+  "tempo": 54,
+  "timeSignature": [
+    2,
+    4
+  ],
+  "youtubeId": "ZHRovCDi5j4",
+  "sourceProject": "ZHRovCDi5j4",
+  "publishedAt": "2026-09-23"
+}

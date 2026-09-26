@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "@/i18n/I18nProvider";
 import { createPortal } from "react-dom";
 import { getChordDiagram } from "@/lib/chord-diagrams";
 import ChordDiagram from "./ChordDiagram";
@@ -15,6 +16,7 @@ export default function ChordPopover({ chordName, anchorRect, onClose }: ChordPo
   const popoverRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
+  const { t } = useI18n();
   const diagram = getChordDiagram(chordName);
 
   useEffect(() => {
@@ -59,19 +61,19 @@ export default function ChordPopover({ chordName, anchorRect, onClose }: ChordPo
   return createPortal(
     <div
       ref={popoverRef}
-      className="fixed z-50 bg-zinc-800 border border-zinc-600 rounded-lg shadow-xl p-3"
+      className="panel fixed z-50 rounded-xl p-3"
       style={{ top: position.top, left: position.left }}
     >
-      <div className="text-amber-400 font-bold text-sm mb-2">{chordName}</div>
+      <div className="mb-2 font-display text-lg font-semibold text-brass-300">{chordName}</div>
       {diagram ? (
         <>
           <ChordDiagram data={diagram} />
-          <div className="text-xs text-zinc-400 mt-2">
+          <div className="mt-2 font-mono text-xs text-sand-400">
             {diagram.notes.filter((n) => n !== "X").join(" · ")}
           </div>
         </>
       ) : (
-        <div className="text-xs text-zinc-500 py-2">Diagram not available</div>
+        <div className="py-2 text-xs text-sand-500">{t.reader.chordMissing}</div>
       )}
     </div>,
     document.body

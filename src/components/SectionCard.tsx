@@ -4,6 +4,7 @@ import { Section } from "@/lib/types";
 import ChordLine from "./ChordLine";
 import LyricLine from "./LyricLine";
 import TabLine from "./TabLine";
+import { useI18n } from "@/i18n/I18nProvider";
 
 interface SectionCardProps {
   section: Section;
@@ -30,12 +31,13 @@ export default function SectionCard({
   isDragOver = false,
   onSplit,
 }: SectionCardProps) {
+  const { t } = useI18n();
   const canSplit = onSplit && section.lines.length >= 4;
   return (
     <div
-      className={`w-fit min-w-[280px] max-w-full border rounded-lg bg-zinc-900 p-4 section-card-print transition-all ${
+      className={`panel w-fit min-w-[280px] max-w-full overflow-x-auto rounded-2xl p-5 section-card-print transition-all ${
         isDragging ? "opacity-50" : ""
-      } ${isDragOver ? "border-amber-500" : "border-zinc-700"}`}
+      } ${isDragOver ? "!border-brass-400" : ""}`}
       draggable={draggable}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
@@ -43,14 +45,14 @@ export default function SectionCard({
       onDragEnd={onDragEnd}
     >
       {section.title && (
-        <div className="flex items-center justify-between mb-3 border-b border-zinc-700 pb-2">
-          <h3 className="text-amber-500 font-semibold text-sm uppercase tracking-wide">
+        <div className="mb-3 flex items-center justify-between border-b border-brass-400/15 pb-2">
+          <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brass-400">
             {section.title}
           </h3>
           {draggable && (
             <span
-              className="cursor-grab text-zinc-600 hover:text-zinc-400 transition-colors select-none"
-              title="Drag to reorder"
+              className="cursor-grab select-none text-sand-600 transition-colors hover:text-sand-300"
+              title={t.reader.drag}
             >
               ⠿
             </span>
@@ -85,11 +87,11 @@ export default function SectionCard({
               <div
                 className="group relative h-0 flex items-center cursor-pointer no-print"
                 onClick={() => onSplit!(i)}
-                title="Split section here"
+                title={t.reader.split}
               >
                 <div className="absolute inset-x-0 -top-1 h-2 z-10" />
-                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-dashed border-amber-500/0 group-hover:border-amber-500/80 transition-all" />
-                <span className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs text-amber-500/0 group-hover:text-amber-500/80 bg-zinc-900 px-1 transition-all select-none">
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-dashed border-brass-400/0 group-hover:border-brass-400/80 transition-all" />
+                <span className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs text-brass-400/0 group-hover:text-brass-400/80 group-hover:bg-walnut-850 px-1 transition-all select-none">
                   ✂
                 </span>
               </div>

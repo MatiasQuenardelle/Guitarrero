@@ -11,7 +11,7 @@ export default function LiteYouTube({ youtubeId, title }: LiteYouTubeProps) {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
+    <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-brass-400/15 bg-walnut-950">
       {playing ? (
         <iframe
           className="absolute inset-0 h-full w-full"
@@ -33,7 +33,7 @@ export default function LiteYouTube({ youtubeId, title }: LiteYouTubeProps) {
             className="h-full w-full object-cover opacity-80 transition-opacity group-hover:opacity-100"
           />
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-950/80 text-amber-400 transition-transform group-hover:scale-110">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-walnut-950/85 text-brass-300 ring-1 ring-brass-400/40 transition-transform group-hover:scale-110">
               <svg viewBox="0 0 24 24" className="ml-1 h-8 w-8" fill="currentColor" aria-hidden>
                 <path d="M8 5.5v13l11-6.5-11-6.5z" />
               </svg>

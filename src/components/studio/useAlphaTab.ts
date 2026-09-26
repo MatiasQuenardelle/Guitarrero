@@ -54,20 +54,32 @@ export interface GuitarSound {
   url: string;
 }
 
+/**
+ * The guitar soundfonts are too big for the repo (~110MB), so in production they are served
+ * from a static host that mirrors public/alphatab/soundfont/ — set NEXT_PUBLIC_SOUNDS_ORIGIN
+ * to it. Locally they come from public/ after `npm run soundfont`.
+ */
+const SOUNDS_ORIGIN = process.env.NEXT_PUBLIC_SOUNDS_ORIGIN ?? "";
+
+function soundUrl(path: string): string {
+  return path.startsWith("/alphatab/soundfont/") ? `${SOUNDS_ORIGIN}${path}` : path;
+}
+
 /** Written by `npm run soundfont`: the dedicated nylon guitars installed, best first. */
-const NYLON_MANIFEST = "/alphatab/soundfont/nylon/manifest.json";
+const NYLON_MANIFEST = soundUrl("/alphatab/soundfont/nylon/manifest.json");
 
 /** MuseScore General's nylon guitar, for when no dedicated one is installed. */
 const FALLBACK_GUITAR: GuitarSound = {
   id: "musescore",
   label: "MuseScore General",
-  url: "/alphatab/soundfont/MuseScore_General.sf3",
+  url: soundUrl("/alphatab/soundfont/MuseScore_General.sf3"),
 };
 
 async function availableGuitarSounds(): Promise<GuitarSound[]> {
   const [installed, fallbackPresent] = await Promise.all([
     fetch(NYLON_MANIFEST)
       .then((response) => (response.ok ? (response.json() as Promise<GuitarSound[]>) : []))
+      .then((sounds) => sounds.map((sound) => ({ ...sound, url: soundUrl(sound.url) })))
       .catch(() => [] as GuitarSound[]),
     fetch(FALLBACK_GUITAR.url, { method: "HEAD" })
       .then((response) => response.ok)
@@ -201,12 +213,28 @@ export function useAlphaTab(tex: string): AlphaTabController {
         // Without any guitar soundfont on disk the bundled one has to do.
         guitarLoadedRef.current = !initial;
 
+        // Phones get a smaller engraving so a whole bar or two fit across the screen.
+        const scale = window.innerWidth < 640 ? 0.7 : 1;
+        setZoomState(scale);
+
         api = new alphaTab.AlphaTabApi(containerRef.current, {
           core: {
             fontDirectory: "/alphatab/font/",
             logLevel: alphaTab.LogLevel.Warning,
           },
-          display: { staveProfile: alphaTab.StaveProfile.ScoreTab },
+          display: {
+            scale,
+            staveProfile: alphaTab.StaveProfile.ScoreTab,
+            // Warm ink on the cream paper the player sits on.
+            resources: {
+              mainGlyphColor: "#2B1E15",
+              secondaryGlyphColor: "#2B1E1580",
+              staffLineColor: "#8C7862",
+              barSeparatorColor: "#4A3425",
+              barNumberColor: "#9A6A2C",
+              scoreInfoColor: "#2B1E15",
+            },
+          },
           // SongBook mode hides the "(0)" a tie leaves at the start of the next bar in the
           // tab, the way engraved classical tabs do; GuitarPro mode prints it.
           notation: { notationMode: alphaTab.NotationMode.SongBook },

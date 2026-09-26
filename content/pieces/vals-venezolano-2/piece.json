@@ -1,0 +1,23 @@
+{
+  "slug": "vals-venezolano-2",
+  "title": {
+    "es": "Vals venezolano N.º 2",
+    "en": "Venezuelan Waltz No. 2"
+  },
+  "composer": "Antonio Lauro",
+  "composerDates": "1917 – 1986",
+  "difficulty": 3,
+  "about": {
+    "es": "Andreína: hemiolas entre 3/4 y 6/8, bajos independientes y mucho carácter.",
+    "en": "Andreína: hemiolas between 3/4 and 6/8, independent basses and lots of character."
+  },
+  "bars": 66,
+  "tempo": 90,
+  "timeSignature": [
+    3,
+    4
+  ],
+  "youtubeId": "eAzHv0QHDb4",
+  "sourceProject": "eAzHv0QHDb4-checked",
+  "publishedAt": "2026-09-23"
+}

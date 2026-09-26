@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { buttonClass } from "@/components/ui/button";
+import { useI18n } from "@/i18n/I18nProvider";
 
 interface TabInputProps {
   onParse: (text: string) => void;
@@ -78,65 +80,46 @@ And after all
 You're my wonderwall`;
 
 export default function TabInput({ onParse, onOpenLibrary }: TabInputProps) {
+  const { t } = useI18n();
   const [text, setText] = useState("");
 
   const handleParse = () => {
-    if (text.trim()) {
-      onParse(text);
-    }
+    if (text.trim()) onParse(text);
   };
 
-  const handleSample = () => {
-    setText(SAMPLE_TAB);
-  };
-
+  // Pasting into an empty box goes straight to the verses.
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const pasted = e.clipboardData.getData("text");
-    if (pasted.trim()) {
-      setTimeout(() => onParse(pasted), 0);
-    }
+    if (pasted.trim() && !text.trim()) setTimeout(() => onParse(pasted), 0);
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      <div className="mb-6 text-center">
-        <h1 className="text-4xl font-bold text-zinc-100 mb-2">
-          Guitar<span className="text-amber-400">rero</span>
-        </h1>
-        <p className="text-zinc-400">
-          Paste a guitar tab to view sections side-by-side
-        </p>
+    <div className="mx-auto w-full max-w-3xl">
+      <div className="mb-8">
+        <h1 className="font-display text-5xl font-medium text-cream-50">{t.reader.title}</h1>
+        <p className="mt-2 max-w-xl text-[15px] text-sand-400">{t.reader.lead}</p>
       </div>
 
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onPaste={handlePaste}
-        placeholder="Paste your guitar tab here..."
-        className="w-full h-80 bg-zinc-900 border border-zinc-700 rounded-lg p-4 text-sm font-mono text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-amber-500 resize-none"
-        spellCheck={false}
-      />
-
-      <div className="flex gap-3 mt-4 justify-center flex-wrap">
-        <button
-          onClick={handleParse}
-          disabled={!text.trim()}
-          className="px-6 py-2.5 bg-amber-500 text-zinc-900 font-semibold rounded-lg hover:bg-amber-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          Parse Tab
-        </button>
-        <button
-          onClick={handleSample}
-          className="px-6 py-2.5 border border-zinc-600 text-zinc-300 rounded-lg hover:border-amber-500 hover:text-amber-400 transition-colors"
-        >
-          Load Sample
-        </button>
-        <button
-          onClick={onOpenLibrary}
-          className="px-6 py-2.5 border border-zinc-600 text-zinc-300 rounded-lg hover:border-amber-500 hover:text-amber-400 transition-colors"
-        >
-          My Tabs
-        </button>
+      <div className="panel overflow-hidden rounded-2xl">
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onPaste={handlePaste}
+          placeholder={t.reader.placeholder}
+          className="block h-[46vh] min-h-72 w-full resize-none bg-transparent p-5 font-mono text-[13px] leading-relaxed text-cream-100 placeholder:text-sand-600 focus:outline-none"
+          spellCheck={false}
+        />
+        <div className="flex flex-wrap items-center gap-2 border-t border-brass-400/10 bg-walnut-950/50 px-4 py-3">
+          <button onClick={handleParse} disabled={!text.trim()} className={buttonClass("primary", "md")}>
+            {t.reader.view}
+          </button>
+          <button onClick={() => setText(SAMPLE_TAB)} className={buttonClass("ghost", "md")}>
+            {t.reader.sample}
+          </button>
+          <button onClick={onOpenLibrary} className={buttonClass("secondary", "md", "ml-auto")}>
+            {t.reader.saved}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,13 +1,47 @@
 # Guitarrero
 
-A local guitar practice app: a text-tab viewer with chord diagrams (`/`), a Duolingo-style
-classical guitar path (`/learn`), and **Studio** (`/studio`) — turn a YouTube tab video into
-a playable Guitar Pro–style score.
+Classical guitar study app, in Spanish and English:
+
+- `/` — landing page.
+- `/library` — the published repertoire; `/piece/<slug>` — Guitar Pro–style player (notation +
+  tab, tempo, bar loops, metronome, count-in, nylon guitar sounds, full screen).
+- `/reader` — paste a text tab and read it verse by verse, or full screen on the "stand".
+- `/login`, `/signup` — optional accounts (Neon Auth). Without one, favorites and tempos
+  live in the browser; with one they sync across devices.
+- `/studio` — **admin only**: turn a YouTube tab video into a score and publish it to the
+  library. Exists on the dev server (or with `GUITARRERO_ADMIN=1`); 404 in production.
+- `/learn` — the Duolingo-style path, parked (delete `src/app/learn/layout.tsx` to restore).
 
 ```bash
 npm install     # also copies the alphaTab runtime into public/alphatab/
 npm run dev     # http://localhost:3000
 ```
+
+### Environment (`.env.local`)
+
+| Variable | What |
+| --- | --- |
+| `DATABASE_URL` | Neon Postgres (project `guitarrero`). Schema: `db/schema.sql`. |
+| `NEON_AUTH_BASE_URL` | Neon Auth endpoint of the branch. |
+| `NEON_AUTH_COOKIE_SECRET` | 32+ random chars (`openssl rand -base64 32`). |
+| `NEXT_PUBLIC_SOUNDS_ORIGIN` | Optional. Static host mirroring `public/alphatab/soundfont/` (the guitar soundfonts are too big for git). Without it production plays alphaTab's small built-in set. |
+| `GUITARRERO_ADMIN=1` | Optional. Enables the studio outside the dev server. |
+
+Without the Neon Auth variables sign-in is simply off and the app keeps working.
+
+### Publishing a piece
+
+Tabs are made only in the studio. The library reads `content/pieces/<slug>/`
+(`piece.json` + `score.alphatex`), which is committed to git:
+
+```bash
+npm run publish -- <projectId> --slug lagrima --title "Lágrima" --title-en "Lágrima" \
+  --composer "Francisco Tárrega" --dates "1852 – 1909" --difficulty 1 \
+  --about "…" --about-en "…"
+```
+
+or use the **Publish to the library** panel on a studio project. Publishing the same slug
+again refreshes the score and keeps the texts.
 
 ## Studio
 

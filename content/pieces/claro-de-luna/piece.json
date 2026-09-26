@@ -1,0 +1,23 @@
+{
+  "slug": "claro-de-luna",
+  "title": {
+    "es": "Sonata Claro de Luna (1.er mov.)",
+    "en": "Moonlight Sonata (1st mov.)"
+  },
+  "composer": "Ludwig van Beethoven",
+  "composerDates": "1770 – 1827",
+  "difficulty": 2,
+  "about": {
+    "es": "Tresillos constantes con la mano derecha y la melodía encima: control del arpegio.",
+    "en": "Constant right-hand triplets with the melody on top: arpeggio control."
+  },
+  "bars": 69,
+  "tempo": 80,
+  "timeSignature": [
+    12,
+    8
+  ],
+  "youtubeId": "lqx1n7lQ_ZA",
+  "sourceProject": "lqx1n7lQ_ZA-checked",
+  "publishedAt": "2026-09-23"
+}

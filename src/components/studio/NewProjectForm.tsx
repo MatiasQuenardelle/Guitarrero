@@ -35,26 +35,26 @@ export default function NewProjectForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mb-8 rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
+    <form onSubmit={submit} className="mb-8 rounded-xl border border-walnut-700 bg-walnut-950/60 p-4">
       <div className="flex flex-col gap-3 sm:flex-row">
         <input
           type="text"
           value={url}
           onChange={(event) => setUrl(event.target.value)}
           placeholder="https://www.youtube.com/watch?v=…"
-          className="h-11 flex-1 rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-amber-500/60"
+          className="h-11 flex-1 rounded-lg border border-walnut-700 bg-walnut-900 px-3 text-sm text-cream-50 outline-none placeholder:text-sand-600 focus:border-brass-400/60"
         />
         <button
           type="submit"
           disabled={busy || !url.trim()}
-          className="h-11 rounded-lg bg-amber-500 px-5 text-sm font-medium text-zinc-950 transition-opacity disabled:opacity-40"
+          className="h-11 rounded-lg bg-brass-400 px-5 text-sm font-medium text-walnut-950 transition-opacity disabled:opacity-40"
         >
           {busy ? "Starting…" : "Transcribe"}
         </button>
       </div>
 
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
-      <p className="mt-3 text-xs text-zinc-500">
+      <p className="mt-3 text-xs text-sand-500">
         Downloading, screenshotting and reading a 3-minute video takes a few minutes. You can
         leave the page — progress is saved.
       </p>
