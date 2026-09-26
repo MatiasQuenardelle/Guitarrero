@@ -1,19 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { I18nProvider } from "@/i18n/I18nProvider";
 import { getLocale } from "@/i18n/server";
 import "./globals.css";
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
+// Self-hosted (latin, variable): next/font/google breaks the Vercel build when Google hands
+// its servers /l/font?kit=… URLs, which Turbopack can't resolve.
+const inter = localFont({
+  variable: "--font-inter",
+  src: "./fonts/inter.woff2",
+  weight: "100 900",
 });
 
-const jetbrains = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["latin"] });
+const cormorant = localFont({
+  variable: "--font-cormorant",
+  src: [
+    { path: "./fonts/cormorant-garamond.woff2", weight: "300 700", style: "normal" },
+    { path: "./fonts/cormorant-garamond-italic.woff2", weight: "300 700", style: "italic" },
+  ],
+});
+
+const jetbrains = localFont({
+  variable: "--font-jetbrains",
+  src: "./fonts/jetbrains-mono.woff2",
+  weight: "100 800",
+});
 
 export const metadata: Metadata = {
   title: {
