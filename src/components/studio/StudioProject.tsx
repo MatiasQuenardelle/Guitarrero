@@ -193,31 +193,33 @@ export default function StudioProject({
           <FrameStrip
             projectId={project.meta.id}
             frames={project.meta.frames}
-            youtubeId={project.meta.id}
+            youtubeId={project.meta.source === "pdf" ? undefined : project.meta.id}
           />
 
-          <section className="grid gap-4 md:grid-cols-[2fr_1fr]">
-            <LiteYouTube youtubeId={project.meta.id} title={project.meta.title} />
-            <div className="flex flex-col gap-3 rounded-xl border border-walnut-700 bg-walnut-950/60 p-4">
-              <h2 className="text-sm text-sand-300">Source video</h2>
-              <p className="text-xs text-sand-500">
-                Playback above comes from the transcription, not the video — the two are not
-                synced yet.
-              </p>
-              <button
-                type="button"
-                onClick={rerun}
-                disabled={rerunning}
-                className="h-9 rounded-lg border border-walnut-600 bg-walnut-900 text-sm text-sand-300 hover:border-walnut-500 disabled:opacity-40"
-              >
-                {rerunning ? "Re-reading…" : "Read the tab again"}
-              </button>
-              <p className="text-xs text-sand-600">
-                Re-runs the transcription on the existing screenshots. Your edits to the tab
-                source will be overwritten.
-              </p>
-            </div>
-          </section>
+          {project.meta.source !== "pdf" && (
+            <section className="grid gap-4 md:grid-cols-[2fr_1fr]">
+              <LiteYouTube youtubeId={project.meta.id} title={project.meta.title} />
+              <div className="flex flex-col gap-3 rounded-xl border border-walnut-700 bg-walnut-950/60 p-4">
+                <h2 className="text-sm text-sand-300">Source video</h2>
+                <p className="text-xs text-sand-500">
+                  Playback above comes from the transcription, not the video — the two are not
+                  synced yet.
+                </p>
+                <button
+                  type="button"
+                  onClick={rerun}
+                  disabled={rerunning}
+                  className="h-9 rounded-lg border border-walnut-600 bg-walnut-900 text-sm text-sand-300 hover:border-walnut-500 disabled:opacity-40"
+                >
+                  {rerunning ? "Re-reading…" : "Read the tab again"}
+                </button>
+                <p className="text-xs text-sand-600">
+                  Re-runs the transcription on the existing screenshots. Your edits to the tab
+                  source will be overwritten.
+                </p>
+              </div>
+            </section>
+          )}
         </div>
       )}
       </div>

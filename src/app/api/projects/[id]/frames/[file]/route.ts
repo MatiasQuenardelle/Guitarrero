@@ -15,7 +15,7 @@ export async function GET(
 
   return new NextResponse(new Uint8Array(image), {
     headers: {
-      "Content-Type": "image/jpeg",
+      "Content-Type": file.endsWith(".png") ? "image/png" : "image/jpeg",
       "Cache-Control": "private, max-age=3600",
     },
   });

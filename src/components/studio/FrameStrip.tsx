@@ -6,7 +6,8 @@ import type { FrameInfo } from "@/lib/studio/types";
 interface FrameStripProps {
   projectId: string;
   frames: FrameInfo[];
-  youtubeId: string;
+  /** Absent for a PDF score: its frames are page systems, labelled by bar, not by time. */
+  youtubeId?: string;
 }
 
 function timestamp(seconds: number): string {
@@ -17,6 +18,8 @@ function timestamp(seconds: number): string {
 /** The screenshots the transcription was read from — the reference when a bar looks wrong. */
 export default function FrameStrip({ projectId, frames, youtubeId }: FrameStripProps) {
   const [active, setActive] = useState<FrameInfo | null>(null);
+  const label = (frame: FrameInfo) =>
+    youtubeId ? timestamp(frame.time) : frame.bar ? `bar ${frame.bar}` : `system ${frame.time + 1}`;
 
   if (frames.length === 0) return null;
 
@@ -41,11 +44,11 @@ export default function FrameStrip({ projectId, frames, youtubeId }: FrameStripP
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`/api/projects/${projectId}/frames/${frame.file}`}
-              alt={`Tab at ${timestamp(frame.time)}`}
+              alt={`Tab at ${label(frame)}`}
               className="h-16 w-auto max-w-none rounded bg-white"
             />
             <span className="mt-1 block text-center text-[11px] text-sand-500">
-              {timestamp(frame.time)}
+              {label(frame)}
             </span>
           </button>
         ))}
@@ -56,17 +59,19 @@ export default function FrameStrip({ projectId, frames, youtubeId }: FrameStripP
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`/api/projects/${projectId}/frames/${active.file}`}
-            alt={`Tab at ${timestamp(active.time)}`}
+            alt={`Tab at ${label(active)}`}
             className="w-full rounded-lg bg-white"
           />
-          <a
-            href={`https://www.youtube.com/watch?v=${youtubeId}&t=${Math.floor(active.time)}s`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-block text-xs text-brass-400 hover:text-brass-300"
-          >
-            Open this moment on YouTube ({timestamp(active.time)}) ↗
-          </a>
+          {youtubeId && (
+            <a
+              href={`https://www.youtube.com/watch?v=${youtubeId}&t=${Math.floor(active.time)}s`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block text-xs text-brass-400 hover:text-brass-300"
+            >
+              Open this moment on YouTube ({timestamp(active.time)}) ↗
+            </a>
+          )}
         </div>
       )}
     </section>

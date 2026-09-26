@@ -524,3 +524,20 @@ Asked for a full redesign + landing + login, I wrote the plan, asked three quest
 stopped. Matías wanted to leave it running all night. **Rule:** on a large task, write the
 plan and keep going in the same turn. Decide open questions with sensible defaults and
 record them in `tasks/todo.md`. Only stop for destructive, paid or public actions.
+
+## A notation + TAB PDF is its own ground truth — read the vector layer, not pixels (2026-09-26)
+Mozart K. 545 came as a LAGA PDF (TCPDF export). Every tab fret number is real text, so
+PyMuPDF gives each one's exact string (nearest of the six tab lines) and bar (vertical lines
+crossing the whole tab). `scripts/pipeline/pdf_frames.py` cuts one frame per system for the
+usual Opus read (rhythm), and `scripts/pdf-check.py` then replaces every beat's notes with the
+PDF's column wherever the counts line up: 94.4% raw → 100% of 1171 notes, one bar fixed by hand.
+Three traps in the text extraction, each found by a note count that didn't add up:
+- `get_text("words")` joins digits of a chord **stacked on neighbouring lines** into one word,
+  and a space into "0 1 3" — read `rawdict` chars and join only touching digits.
+- A grace note sits **1pt** before its main note ("8" + "10" → "810"): join gap must be < 0.5pt.
+- Where two voices share a note the PDF draws the **same glyph twice** — dedupe identical chars.
+- A repeat barline is two vertical lines ~3pt apart, and after a clef it makes a narrow empty
+  "bar" — merge lines < 5pt apart and drop empty spans < 40pt.
+
+**Rule:** before paying a model to read a PDF, run `pdftotext -layout` on one page. If the tab
+digits come out as text, the notes are free and exact; only the rhythm needs the model.

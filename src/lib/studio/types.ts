@@ -50,6 +50,10 @@ export interface ProjectMeta {
   header?: ScoreHeader;
   /** URL name, e.g. "clair-de-lune"; derived from the title when unset (`scripts/slug.ts` sets it). */
   slug?: string;
+  /** Read from a PDF score instead of a video; `video` is then a stub and `url` the PDF. */
+  source?: "pdf";
+  /** PDF only: the pages holding the TAB score, first and last. */
+  pages?: [number, number];
 }
 
 export type Stage =
