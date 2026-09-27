@@ -1,7 +1,7 @@
 import NewProjectForm from "@/components/studio/NewProjectForm";
 import ProjectList from "@/components/studio/ProjectList";
 import { requireAdmin } from "@/lib/admin";
-import { listPieces } from "@/lib/catalog/server";
+import { listLibrary } from "@/lib/catalog/server";
 import { listProjects } from "@/lib/studio/server";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +11,7 @@ export const metadata = {
   description: "Turn a YouTube tab video into a playable score.",
 };
 
-export default function StudioPage() {
+export default async function StudioPage() {
   requireAdmin();
   const projects = listProjects();
 
@@ -32,7 +32,7 @@ export default function StudioPage() {
       <NewProjectForm />
       <ProjectList
         initialProjects={projects}
-        published={Object.fromEntries(listPieces().map((piece) => [piece.sourceProject, piece.slug]))}
+        published={Object.fromEntries((await listLibrary()).map((piece) => [piece.sourceProject, piece.slug]))}
       />
       </div>
     </main>

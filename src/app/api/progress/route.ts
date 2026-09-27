@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { ownerUser } from "@/lib/auth/owner";
-import { getPiece } from "@/lib/catalog/server";
+import { findPiece } from "@/lib/catalog/server";
 import { getProgress, updateProgress } from "@/lib/progress/server";
 import type { ProgressUpdate } from "@/lib/progress/types";
 
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ error: "Sign in first" }, { status: 401 });
 
   const body = (await request.json()) as ProgressUpdate;
-  if (typeof body.slug !== "string" || !getPiece(body.slug)) {
+  if (typeof body.slug !== "string" || !(await findPiece(body.slug))) {
     return NextResponse.json({ error: "Unknown piece" }, { status: 400 });
   }
   if (body.favorite !== undefined && typeof body.favorite !== "boolean") {

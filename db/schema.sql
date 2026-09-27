@@ -12,3 +12,12 @@ create table if not exists piece_progress (
 
 create index if not exists piece_progress_recent
   on piece_progress (user_id, last_opened_at desc);
+
+-- Pieces kept out of the public repo, e.g. arrangements bought as a PDF. Same shape as
+-- content/pieces/<slug>/, and like everything in the app only the owner accounts see them.
+create table if not exists private_pieces (
+  slug text primary key,
+  piece jsonb not null,
+  alphatex text not null,
+  updated_at timestamptz not null default now()
+);

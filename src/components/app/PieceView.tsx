@@ -156,13 +156,17 @@ export default function PieceView({ piece, alphaTex }: { piece: Piece; alphaTex:
               <DifficultyMeter level={piece.difficulty} label={t.library.difficulty[piece.difficulty]} />
             </div>
 
-            <div className="purfling my-6" />
+            {piece.youtubeId && (
+              <>
+                <div className="purfling my-6" />
 
-            <h3 className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brass-400">{t.piece.reference}</h3>
-            <div className="mt-3">
-              <LiteYouTube youtubeId={piece.youtubeId} title={piece.title[locale]} />
-            </div>
-            <p className="mt-3 text-xs leading-relaxed text-sand-500">{t.piece.referenceNote}</p>
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brass-400">{t.piece.reference}</h3>
+                <div className="mt-3">
+                  <LiteYouTube youtubeId={piece.youtubeId} title={piece.title[locale]} />
+                </div>
+                <p className="mt-3 text-xs leading-relaxed text-sand-500">{t.piece.referenceNote}</p>
+              </>
+            )}
           </aside>
         </div>
       )}

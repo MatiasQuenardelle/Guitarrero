@@ -21,8 +21,10 @@ export interface Piece {
   timeSignature: [number, number];
   /** Non-standard tuning, e.g. "Drop D". */
   tuning?: string;
-  /** The YouTube video the tab was read from, for reference. */
-  youtubeId: string;
+  /** The YouTube video the tab was read from, for reference. Absent for a tab read from a PDF. */
+  youtubeId?: string;
+  /** Kept in the database rather than the public repo (see catalog/server.ts). */
+  private?: boolean;
   /** Studio project it was published from, so it can be published again after a fix. */
   sourceProject: string;
   publishedAt: string;

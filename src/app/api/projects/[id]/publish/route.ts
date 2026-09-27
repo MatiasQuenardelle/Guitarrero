@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { adminOnly } from "@/lib/admin";
 import { publishProject, type PublishOptions } from "@/lib/catalog/publish";
 
-/** Studio → library: copies the project's current score into content/pieces/<slug>. */
+/** Studio → library: copies the project's current score into content/pieces/<slug>, or the database. */
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -13,7 +13,7 @@ export async function POST(
   const { id } = await params;
   const options = (await request.json()) as PublishOptions;
   try {
-    return NextResponse.json({ piece: publishProject(id, options) });
+    return NextResponse.json({ piece: await publishProject(id, options) });
   } catch (error) {
     return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }

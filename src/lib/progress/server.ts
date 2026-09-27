@@ -1,11 +1,5 @@
-import { neon } from "@neondatabase/serverless";
+import { sql } from "../db";
 import type { PieceProgress, ProgressUpdate } from "./types";
-
-/** Schema: db/schema.sql. */
-function sql() {
-  if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not set");
-  return neon(process.env.DATABASE_URL);
-}
 
 interface Row {
   piece_slug: string;
