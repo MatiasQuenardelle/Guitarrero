@@ -35,6 +35,9 @@ def correct_beat(beat, column):
         )
         note = {**match, "string": string, "fret": fret}
         note.pop("tie", None)
+        # The PDF's tab prints only the main note of a trill; alphaTab would add the upper
+        # note as a parenthesised "(3)" that the score never shows.
+        note.pop("trill", None)
         if tied:
             note["tie"] = True
         notes.append(note)
