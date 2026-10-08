@@ -541,3 +541,32 @@ Three traps in the text extraction, each found by a note count that didn't add u
 
 **Rule:** before paying a model to read a PDF, run `pdftotext -layout` on one page. If the tab
 digits come out as text, the notes are free and exact; only the rhythm needs the model.
+
+## Published tabs: diff them against the page, don't eyeball (2026-10-07)
+Matías caught La Paloma bar 3 by ear (open A and the 2nd-string note struck together; they should
+be bass first, then the tied triplet) and then Moonlight bar 23 (an extra `7`). Both were
+transcription errors the cheap method left in, and my first "review" of La Paloma missed the
+same pattern in bars 8, 13 and 18 because I matched digits to notes by eye instead of by column.
+- A **half note tied into the next bar's first triplet note** prints no number there: the page
+  has the bass alone on beat 1, then the next notes. The score must be `(-.2 0.5).8{tu 3 2} …`.
+  Likewise a bass whole note tied across bars (Moonlight 36-37, 52, 54) is `-.6` / `-.5`, not a
+  fresh attack.
+- What works: read every column off the frames with `page_reader.read_pages` (no model, no cost),
+  parse the *published* `.alphatex` with alphaTab (`string = 7 - n.string`), drop tie
+  destinations and diff beat by beat. Moonlight went from 23 differing bars to 0.
+- The reader's blind spots (so a diff isn't gospel): it can't read a slide glyph `5—7`, has no
+  template for digits missing from the model's output (6, 8 → read as 0), and drops the green
+  playback-cursor digit. Eyeball only the bars it flags.
+- Last beat with an ornament (dotted 8th + 16th over three eighths) is `(a b).8 c.8 d.16 e.16`.
+- Auditing every published piece (2026-10-07) turned up, besides Moonlight/La Paloma: Clair de Lune
+  4 wrong strings (bars 38, 43, 44, 56), Marcha Turca 5 bars missing their `10→9` / `9→7`
+  pull-off graces and a stale copy in written-out repeat bar 74, Chopin one missing grace (bar 11).
+  Lágrima and Adelita were clean. **Vals Venezolano 2 (Andreina) has ~66 score bars for ~45 bars
+  in the video**: consecutive frames overlap and the same physical bar was read 2-3 times
+  (score bars 4, 6, 7 are all the video's bar 3), while ~5 bars were never fully visible.
+- `page_reader` gaps found along the way (patched only in a scratch copy, not in the repo):
+  it only sees near-black ink, so the green/blue digit under the playback cursor vanishes (use the
+  RGB minimum, not grey); it takes the *median glyph width* as one digit, which breaks on pages
+  full of `10`/`12` (use `min(median, 0.6 × line gap)`); it drops single-digit harmonics `<4>`.
+- A "frame diff" can't tell rhythm; for tab-only scrolling videos check the bar COUNT too (stitch
+  by scroll and compare to the score) before trusting any bar-level diff.
