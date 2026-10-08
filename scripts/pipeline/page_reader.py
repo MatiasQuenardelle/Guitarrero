@@ -63,7 +63,8 @@ def find_glyphs(path):
         return None
     gap = float(np.mean(np.diff(ys)))
     paper = np.median(gray[height // 2:])
-    ink = gray < paper - 110  # digits are near-black; grey staff lines and cursors are not
+    rgb_min = np.asarray(Image.open(path).convert('RGB')).astype(float).min(axis=2)
+    ink = rgb_min < paper - 110  # near-black digits, and the green/blue digit under the playback cursor
     top, bottom = int(round(ys[0])), int(round(ys[5]))
 
     # Barlines: columns inked all the way from string 1 to string 6.
@@ -84,15 +85,15 @@ def find_glyphs(path):
         band[:, band.sum(axis=0) == band[max(0, centre - 1):centre + 2].sum(axis=0)] = False
         band[:, on_barline] = False
         for a, b in _runs(band.any(axis=0), gap * 0.5):
-            if b - a > gap * 2.6:
-                continue  # slur and tie arcs, text
+            if b - a > gap * 3.8:
+                continue  # slur and tie arcs, text (a <12> harmonic is ~3 gaps wide)
             rows = np.where(band[:, a:b].any(axis=1))[0]
             if rows[-1] - rows[0] < gap * 0.5:
                 continue
             glyphs.append({"x": (a + b) / 2, "w": b - a, "string": string,
                            "bitmap": band[rows[0]:rows[-1] + 1, a:b].copy()})
     if glyphs:
-        unit = np.median([g["w"] for g in glyphs])  # one digit's width
+        unit = min(np.median([g["w"] for g in glyphs]), 0.6 * gap)  # one digit's width (a page of "10"s must not set it to two)
         for g in glyphs:
             g["digits"] = max(1, int(round(g["w"] / unit)))
     return {"gap": gap, "barlines": barlines, "glyphs": sorted(glyphs, key=lambda g: g["x"])}
@@ -172,7 +173,11 @@ def read_pages(frame_files, model_bars_by_frame):
 
     def read(glyph):
         chars, conf = "", 1.0
-        for v in _digit_vectors(glyph):
+        vecs = _digit_vectors(glyph)
+        if len(vecs) in (3, 4):  # <n> / <nn>: judge only the digits between the angle brackets
+            vecs = vecs[1:-1]
+            glyph["bracketed"] = True
+        for v in vecs:
             best = nearest(v)
             chars += best
             conf = min(conf, float(templates[best] @ v) / (np.linalg.norm(templates[best]) or 1))
@@ -185,8 +190,8 @@ def read_pages(frame_files, model_bars_by_frame):
             chars, conf = read(g)
             if conf < MIN_CONF:
                 continue
-            if len(chars) == 4:  # <12>: a harmonic's angle brackets come out as two more "digits"
-                chars, g["harmonic"] = chars[1:3], True
+            if g.get("bracketed"):
+                g["harmonic"] = True
             if len(chars) == 2 and int(chars) > MAX_FRET:
                 # Two small numbers side by side (grace notes), not one fret.
                 w = g["w"] / 4

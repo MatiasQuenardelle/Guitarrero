@@ -561,12 +561,21 @@ same pattern in bars 8, 13 and 18 because I matched digits to notes by eye inste
 - Auditing every published piece (2026-10-07) turned up, besides Moonlight/La Paloma: Clair de Lune
   4 wrong strings (bars 38, 43, 44, 56), Marcha Turca 5 bars missing their `10→9` / `9→7`
   pull-off graces and a stale copy in written-out repeat bar 74, Chopin one missing grace (bar 11).
-  Lágrima and Adelita were clean. **Vals Venezolano 2 (Andreina) has ~66 score bars for ~45 bars
-  in the video**: consecutive frames overlap and the same physical bar was read 2-3 times
-  (score bars 4, 6, 7 are all the video's bar 3), while ~5 bars were never fully visible.
-- `page_reader` gaps found along the way (patched only in a scratch copy, not in the repo):
-  it only sees near-black ink, so the green/blue digit under the playback cursor vanishes (use the
-  RGB minimum, not grey); it takes the *median glyph width* as one digit, which breaks on pages
-  full of `10`/`12` (use `min(median, 0.6 × line gap)`); it drops single-digit harmonics `<4>`.
-- A "frame diff" can't tell rhythm; for tab-only scrolling videos check the bar COUNT too (stitch
-  by scroll and compare to the score) before trusting any bar-level diff.
+  Lágrima and Adelita were clean. Vals Venezolano 2 (Andreina) was wrong in a different way: no
+  opening bar (the 5-eighth pickup `0 2 4 0 2`, lost because frame extraction started at the end
+  of the black title card), bar 25 merged two beats, the stacked-chord bars between the two
+  harmonic bars were written 5 times instead of 3, and one harmonic bar ran its strings backwards.
+- **My first read of the Vals ("66 score bars, ~45 in the video") was wrong.** I matched frames by
+  *bar position*, but this piece repeats the same 8 bars written out, so identical bars looked like
+  duplicates. The reliable way: align consecutive frames by voting on equal (string, fret) pairs'
+  x-offsets (the winning offset has 10-30 votes, runner-up 2-3), chain the offsets into one global
+  strip, merge barlines within 40 px, and read each bar once from there. That gave 64 bars + pickup,
+  every note checked against the page. Do this *before* concluding anything about bar counts.
+- `page_reader` fixes now in the repo: RGB-min ink (the cursor digit is green/blue), digit width
+  `min(median, 0.6 × gap)` (pages full of `10`/`12`), bracketed `<12>` harmonics judged by the digits
+  inside, and glyphs up to 3.8 gaps wide kept (`<12>` is ~3). On the Chopin it verifies 89/116 bars
+  instead of 82/116. It still misses harmonic notes in some places, so harmonic bars need an eye.
+- A "frame diff" can't tell rhythm; in tab-only videos it comes only from column spacing
+  (a quarter-first bar is 5 columns, a 6/8-feel bar is 6 even columns).
+- Hammer/pull-off arcs on the Vals come from the transcriber and were only spot-checked (bars
+  1-5, 7, 15 against the frames); my automatic arc detector found none, so treat them as unverified.
