@@ -4,9 +4,12 @@
 //    alphaTab (sonivox, ~1MB) is a minimal General MIDI set whose nylon guitar sounds thin.
 // 2. Dedicated nylon guitar soundfonts from musical-artifacts.com. Its Cloudflare check
 //    blocks scripted downloads, so these are downloaded in a browser into ~/Downloads (or
-//    the folder given as the first argument) and picked up from there. Each is copied into
-//    public/ with its preset renumbered to General MIDI program 24 (nylon guitar), which is
-//    what every tab plays, and listed in nylon/manifest.json for the player's "Guitar" menu.
+//    the folder given as the first argument) and picked up from there. Each gets its preset
+//    renumbered to General MIDI program 24 (nylon guitar), which is what every tab plays, its
+//    samples compressed to Ogg Vorbis (SF3, ~10x smaller: Pianoteq goes from 63MB to 5MB),
+//    and is written to public/sounds/ — committed, so production plays it too — and listed
+//    in public/sounds/manifest.json for the player's "Guitar" menu.
+import { execFileSync } from "node:child_process";
 import { createWriteStream } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
@@ -56,7 +59,7 @@ const NYLON_PROGRAM = 24;
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const soundfontDir = path.join(root, "public/alphatab/soundfont");
-const nylonDir = path.join(soundfontDir, "nylon");
+const nylonDir = path.join(root, "public/sounds");
 const downloads = path.resolve(process.argv[2] ?? path.join(os.homedir(), "Downloads"));
 
 async function installMuseScore() {
@@ -154,13 +157,76 @@ function prepareForAlphaTab(buffer) {
   return presets;
 }
 
+/**
+ * Re-encodes every sample as Ogg Vorbis, giving an SF3 file the way MuseScore's sftools
+ * writes them: each sample's start/end become byte offsets of its Ogg stream in smpl, its
+ * loop points become relative to its first frame, and its type gets the 0x10 Vorbis flag.
+ * Quality 6 renders the same audio through alphaTab's synth (correlation > 0.999).
+ */
+function compressToSf3(buffer) {
+  const chunkBytes = (chunk) => buffer.subarray(chunk.start - 8, chunk.end + (chunk.end - chunk.start) % 2);
+  const riff = (id, data) => {
+    const head = Buffer.alloc(8);
+    head.write(id, 0, "ascii");
+    head.writeUInt32LE(data.length, 4);
+    // alphaTab's RIFF reader does not skip pad bytes, so every chunk must be even already.
+    if (data.length % 2) throw new Error(`odd ${id} chunk`);
+    return Buffer.concat([head, data]);
+  };
+  const list = (type, ...chunks) => riff("LIST", Buffer.concat([Buffer.from(type, "ascii"), ...chunks]));
+
+  const info = findChunk(buffer, 12, buffer.length, "LIST", "INFO");
+  const sdta = findChunk(buffer, 12, buffer.length, "LIST", "sdta");
+  const pdta = findChunk(buffer, 12, buffer.length, "LIST", "pdta");
+  const smpl = findChunk(buffer, sdta.start + 4, sdta.end, "smpl");
+  const shdr = findChunk(buffer, pdta.start + 4, pdta.end, "shdr");
+  const headers = Buffer.from(buffer.subarray(shdr.start, shdr.end));
+
+  const streams = [];
+  let offset = 0;
+  // 46-byte records; the last one is the terminal "EOS" sentinel.
+  for (let record = 0; record + 46 <= headers.length - 46; record += 46) {
+    const [start, end, loopStart, loopEnd, rate] = [20, 24, 28, 32, 36].map((at) => headers.readUInt32LE(record + at));
+    const pcm = buffer.subarray(smpl.start + start * 2, smpl.start + end * 2);
+    const ogg = execFileSync(
+      "ffmpeg",
+      ["-v", "error", "-f", "s16le", "-ar", String(rate), "-ac", "1", "-i", "pipe:0",
+        "-c:a", "libvorbis", "-q:a", "6", "-f", "ogg", "pipe:1"],
+      { input: pcm, maxBuffer: 1 << 30 },
+    );
+    streams.push(ogg);
+    headers.writeUInt32LE(offset, record + 20);
+    headers.writeUInt32LE(offset + ogg.length, record + 24);
+    headers.writeUInt32LE(Math.max(0, loopStart - start), record + 28);
+    headers.writeUInt32LE(Math.max(0, loopEnd - start), record + 32);
+    headers.writeUInt16LE(headers.readUInt16LE(record + 44) | 0x10, record + 44);
+    offset += ogg.length;
+  }
+  if (offset % 2) streams.push(Buffer.alloc(1));
+
+  const pdtaChunks = [];
+  for (let at = pdta.start + 4; at + 8 <= pdta.end; ) {
+    const id = buffer.toString("ascii", at, at + 4);
+    const size = buffer.readUInt32LE(at + 4);
+    pdtaChunks.push(id === "shdr" ? riff("shdr", headers) : chunkBytes({ start: at + 8, end: at + 8 + size }));
+    at += 8 + size + (size % 2);
+  }
+  const body = Buffer.concat([
+    Buffer.from("sfbk", "ascii"),
+    chunkBytes(info),
+    list("sdta", riff("smpl", Buffer.concat(streams))),
+    list("pdta", ...pdtaChunks),
+  ]);
+  return riff("RIFF", body);
+}
+
 async function installNylonGuitars() {
   await mkdir(nylonDir, { recursive: true });
   const manifest = [];
   const missing = [];
 
   for (const guitar of NYLON_GUITARS) {
-    const target = path.join(nylonDir, `${guitar.id}.sf2`);
+    const target = path.join(nylonDir, `${guitar.id}.sf3`);
     const installed = await stat(target).catch(() => null);
 
     if (!installed) {
@@ -172,19 +238,20 @@ async function installNylonGuitars() {
       }
       try {
         const presets = prepareForAlphaTab(buffer);
-        await writeFile(target, buffer);
+        const compressed = compressToSf3(buffer);
+        await writeFile(target, compressed);
         const summary = presets
           .map((preset) => `"${preset.name}" ${preset.renumbered ?? `${preset.bank}/${preset.program}`}`)
           .join(", ");
         const stereo = presets.unlinked ? `, ${presets.unlinked} stereo samples split to mono` : "";
-        console.log(`[soundfont] installed ${guitar.label} (${Math.round(buffer.length / 1e6)}MB): ${summary}${stereo}`);
+        console.log(`[soundfont] installed ${guitar.label} (${Math.round(buffer.length / 1e6)}MB → ${(compressed.length / 1e6).toFixed(1)}MB): ${summary}${stereo}`);
       } catch (error) {
         console.error(`[soundfont] skipped ${guitar.file}: ${error.message}`);
         continue;
       }
     }
 
-    manifest.push({ id: guitar.id, label: guitar.label, url: `/alphatab/soundfont/nylon/${guitar.id}.sf2` });
+    manifest.push({ id: guitar.id, label: guitar.label, url: `/sounds/${guitar.id}.sf3` });
   }
 
   await writeFile(path.join(nylonDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);

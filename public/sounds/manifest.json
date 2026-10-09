@@ -1,0 +1,17 @@
+[
+  {
+    "id": "pianoteq",
+    "label": "Pianoteq 8 Classical",
+    "url": "/sounds/pianoteq.sf3"
+  },
+  {
+    "id": "yamaha45",
+    "label": "Yamaha No. 45",
+    "url": "/sounds/yamaha45.sf3"
+  },
+  {
+    "id": "giannini",
+    "label": "Giannini Trovador",
+    "url": "/sounds/giannini.sf3"
+  }
+]

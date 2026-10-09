@@ -55,31 +55,22 @@ export interface GuitarSound {
 }
 
 /**
- * The guitar soundfonts are too big for the repo (~110MB), so in production they are served
- * from a static host that mirrors public/alphatab/soundfont/ — set NEXT_PUBLIC_SOUNDS_ORIGIN
- * to it. Locally they come from public/ after `npm run soundfont`.
+ * Written by `npm run soundfont`: the dedicated nylon guitars, best first, compressed to SF3
+ * (Pianoteq is 5MB) and committed, so production plays the same guitar as local.
  */
-const SOUNDS_ORIGIN = process.env.NEXT_PUBLIC_SOUNDS_ORIGIN ?? "";
+const NYLON_MANIFEST = "/sounds/manifest.json";
 
-function soundUrl(path: string): string {
-  return path.startsWith("/alphatab/soundfont/") ? `${SOUNDS_ORIGIN}${path}` : path;
-}
-
-/** Written by `npm run soundfont`: the dedicated nylon guitars installed, best first. */
-const NYLON_MANIFEST = soundUrl("/alphatab/soundfont/nylon/manifest.json");
-
-/** MuseScore General's nylon guitar, for when no dedicated one is installed. */
+/** MuseScore General's nylon guitar (40MB, local only), for when no dedicated one is installed. */
 const FALLBACK_GUITAR: GuitarSound = {
   id: "musescore",
   label: "MuseScore General",
-  url: soundUrl("/alphatab/soundfont/MuseScore_General.sf3"),
+  url: "/alphatab/soundfont/MuseScore_General.sf3",
 };
 
 async function availableGuitarSounds(): Promise<GuitarSound[]> {
   const [installed, fallbackPresent] = await Promise.all([
     fetch(NYLON_MANIFEST)
       .then((response) => (response.ok ? (response.json() as Promise<GuitarSound[]>) : []))
-      .then((sounds) => sounds.map((sound) => ({ ...sound, url: soundUrl(sound.url) })))
       .catch(() => [] as GuitarSound[]),
     fetch(FALLBACK_GUITAR.url, { method: "HEAD" })
       .then((response) => response.ok)
